@@ -1,5 +1,7 @@
 const EmployeesPage = () => {
-  return <div>EmployeesPage</div>;
+  return (
+    <div className="bg-brand-purple-700 text-purple-200">EmployeesPage</div>
+  );
 };
 
 export default EmployeesPage;

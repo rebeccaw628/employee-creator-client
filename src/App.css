@@ -1,42 +1,28 @@
+/* @import "tailwindcss/preflight";
+@import "tailwindcss/utilities"; */
+@import 'tailwindcss';
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
+@theme {
+  --font-family-sans: "Montserrat", sans-serif;
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  --color-brand-purple-50: #f6f5fd;
+  --color-brand-purple-100: #efecfb;
+  --color-brand-purple-200: #dcd6f7;
+  --color-brand-purple-300: #cac0f2;
+  --color-brand-purple-400: #b09bea;
+  --color-brand-purple-500: #9573df;
+  --color-brand-purple-600: #8454d3;
+  --color-brand-purple-700: #7442bf;
+  --color-brand-purple-800: #6137a0;
+  --color-brand-purple-900: #512f83;
+  --color-brand-purple-950: #321c59;
 }
