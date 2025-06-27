@@ -5,16 +5,18 @@ interface IconAndTextLabelProps {
   icon: IconDefinition;
   text: string | number;
   spacing?: "compact" | "spacious";
+  variant?: string;
 }
 
 const IconAndTextLabel = ({
   icon,
   text,
-  spacing = "spacious",
+  spacing = "compact",
+  variant = "",
 }: IconAndTextLabelProps) => {
   const labelClass = spacing === "compact" ? "gap-4" : "gap-8";
   return (
-    <div className={`flex ${labelClass}`}>
+    <div className={`flex ${labelClass} ${variant}`}>
       <FontAwesomeIcon icon={icon} />
       <p>{text}</p>
     </div>

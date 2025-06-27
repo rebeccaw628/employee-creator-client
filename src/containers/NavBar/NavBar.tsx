@@ -19,7 +19,7 @@ const NavBar = () => {
     },
   ];
   return (
-    <div className="w-70 h-screen bg-white border-r border-gray-200 p-6 flex flex-col gap-2">
+    <div className="w-1/5 h-screen bg-white border-r border-gray-200 p-6 flex flex-col gap-2">
       {navItems.map((navItem) => (
         <NavLink
           key={navItem.id}

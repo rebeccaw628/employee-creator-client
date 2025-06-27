@@ -10,16 +10,16 @@ import { store } from "./redux/store.ts";
 function App() {
   return (
     <BrowserRouter>
-      <div className="flex h-screen">
-        <Provider store={store}>
+      <Provider store={store}>
+        <div className="flex h-screen">
           <NavBar />
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/employees" element={<EmployeesPage />} />
             <Route path="/employee/:id" element={<EmployeePage />} />
           </Routes>
-        </Provider>
-      </div>
+        </div>
+      </Provider>
     </BrowserRouter>
   );
 }

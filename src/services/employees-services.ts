@@ -1,3 +1,5 @@
+import { displayDate } from "./utils";
+
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export type State = "NSW" | "VIC" | "QLD" | "SA" | "WA" | "TAS" | "ACT" | "NT";
@@ -11,6 +13,7 @@ export interface Employee {
   firstName: string;
   lastName: string;
   middleName?: string | null;
+  jobTitle: string;
   email: string;
   mobile: string;
   address: string;
@@ -30,6 +33,7 @@ export function mapEmployee(employee: any): Employee {
     firstName: employee.first_name,
     lastName: employee.last_name,
     middleName: employee.middle_name,
+    jobTitle: employee.job_title,
     email: employee.email,
     mobile: employee.mobile,
     address: employee.address,
@@ -37,7 +41,7 @@ export function mapEmployee(employee: any): Employee {
     state: employee.state,
     postcode: employee.postcode,
     contractType: employee.contract_type,
-    startDate: employee.start_date,
+    startDate: displayDate(employee.start_date),
     endDate: employee.end_date,
     employmentBasis: employee.employment_basis.split("_").join(" "),
     hoursPerWeek: employee.hours_per_week,
