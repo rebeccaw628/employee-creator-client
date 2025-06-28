@@ -1,25 +1,36 @@
+import { Link } from "react-router";
 import type { Employee } from "../../services/employees-services";
-import { getContractClass, getEmploymentClass } from "../../services/utils";
+import {
+  displayDate,
+  getContractClass,
+  getEmploymentClass,
+} from "../../services/utils";
 import Button from "../Button/Button";
 
 interface EmployeeCardProps {
   employee: Employee;
+  // onView: () => unknown;
 }
 
 const EmployeeCard = ({ employee }: EmployeeCardProps) => {
   return (
     <div className="grid grid-cols-12 gap-x-4 px-6 py-4 text-left border border-gray-200 rounded-lg">
-      <div className="flex flex-col col-span-2">
+      <Link
+        to={`/employees/${employee.id}`}
+        className="flex flex-col col-span-2 cursor-pointer"
+      >
         <h3>{`${employee.firstName} ${employee?.middleName} ${employee.lastName}`}</h3>
         <p className="text-sm text-gray-500">{`ID: ${employee.id}`} </p>
-      </div>
+      </Link>
       <div className="flex flex-col col-span-3">
         <p className="truncate">{employee.email}</p>
         <p className="text-sm text-gray-500">{employee.mobile}</p>
       </div>
       <div className="flex flex-col col-span-4">
         <p className="truncate">{employee.jobTitle}</p>
-        <p className="text-sm text-gray-500">{`Start Date: ${employee.startDate}`}</p>
+        <p className="text-sm text-gray-500">{`Start Date: ${displayDate(
+          employee.startDate
+        )}`}</p>
       </div>
       <div className="flex flex-col text-sm gap-4 col-span-2">
         <p
@@ -37,13 +48,6 @@ const EmployeeCard = ({ employee }: EmployeeCardProps) => {
           {employee.contractType}
         </p>
       </div>
-      <Button
-        variants={
-          "h-10 self-center cursor-pointer hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl "
-        }
-      >
-        VIEW
-      </Button>
     </div>
 
     //old format

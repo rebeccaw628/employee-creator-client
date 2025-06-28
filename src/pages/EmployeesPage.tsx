@@ -8,9 +8,26 @@ import {
   faIdCard,
   faMobileScreenButton,
 } from "@fortawesome/free-solid-svg-icons";
+import Button from "../components/Button/Button";
+import Modal from "../components/Modal/Modal";
+import EmployeeProfile from "../components/EmployeeProfile/EmployeeProfile";
 
 const EmployeesPage = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null
+  );
+
+  const onView = (employeeData: Employee) => {
+    console.log("modal opened");
+    setIsModalOpen(true);
+    setSelectedEmployee(employeeData);
+  };
+
+  const onClose = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     getAllEmployees()
@@ -25,7 +42,6 @@ const EmployeesPage = () => {
     <div className="w-4/5 border border-red-700">
       <h1>Employee List</h1>
       <div className="grid grid-cols-12 gap-x-4 px-6 py-4">
-        {/* <h2>NAME</h2> */}
         <IconAndTextLabel
           icon={faIdCard}
           text={"EMPLOYEE"}
@@ -46,13 +62,21 @@ const EmployeesPage = () => {
           text={"TYPE"}
           variant={"col-span-2"}
         />
+        {/* <h2>NAME</h2> */}
         {/* <h2>CONTACT</h2>
         <h2>TITLE</h2>
         <h2>TYPE</h2> */}
       </div>
       {employees.map((employee) => (
-        <EmployeeCard key={employee.id} employee={employee} />
+        <div key={employee.id} className="flex">
+          <EmployeeCard employee={employee} />
+        </div>
       ))}
+      {/* {isModalOpen && (
+        <Modal onClose={onClose} heading={"Employee Profile"}>
+          <EmployeeProfile employee={selectedEmployee} />
+        </Modal>
+      )} */}
     </div>
   );
 };

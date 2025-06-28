@@ -41,7 +41,7 @@ export function mapEmployee(employee: any): Employee {
     state: employee.state,
     postcode: employee.postcode,
     contractType: employee.contract_type,
-    startDate: displayDate(employee.start_date),
+    startDate: employee.start_date,
     endDate: employee.end_date,
     employmentBasis: employee.employment_basis.split("_").join(" "),
     hoursPerWeek: employee.hours_per_week,

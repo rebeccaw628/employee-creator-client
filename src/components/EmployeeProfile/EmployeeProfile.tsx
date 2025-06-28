@@ -1,39 +1,17 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { getEmployeeById, type Employee } from "../services/employees-services";
-import EmployeeProfile from "../components/EmployeeProfile/EmployeeProfile";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import Button from "../components/Button/Button";
-import IconAndTextLabel from "../components/IconAndTextLabel/IconAndTextLabel";
-import TextLabel from "../components/TextLabel/TextLabel";
-import { getEmploymentYears, displayDate } from "../services/utils";
-import EmployeeForm from "../components/EmployeeForm/EmployeeForm";
-import type { EmployeeFormData } from "../components/EmployeeForm/schema";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import type { Employee } from "../../services/employees-services";
+import { displayDate, getEmploymentYears } from "../../services/utils";
+import Button from "../Button/Button";
+import IconAndTextLabel from "../IconAndTextLabel/IconAndTextLabel";
+import TextLabel from "../TextLabel/TextLabel";
 
-const EmployeePage = () => {
-  const [employee, setEmployee] = useState<Employee | null>(null);
-  const [showForm, setShowForm] = useState<boolean>(false);
-  const { id } = useParams();
+interface EmployeeProfileProps {
+  employee: Employee | null;
+}
 
-  const numberID = Number(id);
-
-  const handleUpdate = () => {
-    setShowForm(!showForm);
-  };
-
-  useEffect(() => {
-    getEmployeeById(numberID)
-      .then((data) => setEmployee(data))
-      .catch((e) => console.warn(e));
-  }, []);
-
-  function handleSave(employee: Employee | null): unknown {
-    throw new Error("Function not implemented.");
-  }
-
+const EmployeeProfile = ({ employee }: EmployeeProfileProps) => {
   return (
-    <div className="w-4/5 flex flex-col gap-6 border relative border-amber-700">
-      {/* <EmployeeProfile employee={employeeProfile} /> */}
+    <div className="flex flex-col gap-6 border relative border-amber-700">
       <h1> Employee Profile</h1>
       <div className="flex gap-20">
         <div className="flex flex-col gap-4">
@@ -92,15 +70,11 @@ const EmployeePage = () => {
         variants={
           "h-10 w-fit cursor-pointer absolute bottom-0 right-0 hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl right-[0]"
         }
-        onClick={handleUpdate}
       >
         <IconAndTextLabel icon={faPenToSquare} text={"Edit Profile"} />
       </Button>
-      {showForm && (
-        <EmployeeForm onSubmit={() => handleSave(employee)} formType={"edit"} />
-      )}
     </div>
   );
 };
 
-export default EmployeePage;
+export default EmployeeProfile;

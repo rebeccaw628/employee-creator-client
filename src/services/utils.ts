@@ -9,6 +9,15 @@ export const displayDate = (dueDate: string) => {
   return formattedDate;
 };
 
+export const getEmploymentYears = (startDate: string) => {
+  const employeeStartDate = new Date(startDate);
+  const currentDate = new Date();
+  const diffInYears =
+    (currentDate.getTime() - employeeStartDate.getTime()) /
+    (1000 * 60 * 60 * 24 * 365);
+  return diffInYears.toFixed(1);
+};
+
 export const getEmploymentClass = (type: string) => {
   const styles = {
     "PART TIME": "bg-orange-100 text-orange-800",
