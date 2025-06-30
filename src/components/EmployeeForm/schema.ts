@@ -5,7 +5,7 @@ export const schema = z
     firstName: z.string().trim().min(2, "First name is required"),
     middleName: z.string().trim().optional(),
     lastName: z.string().trim().min(2, "Last name is required"),
-    jobTitle: z.string().trim().min(3, "Job title is required"),
+    position: z.string().trim().min(3, "Position is required"),
     email: z.string().trim().email({ message: "Invalid email address" }),
     mobile: z
       .string()
@@ -20,24 +20,66 @@ export const schema = z
       errorMap: () => ({ message: "Invalid State" }),
     }),
     postcode: z.string().regex(/^\d{4}$/, "Invalid Postcode"),
-    contractType: z.enum(["Permanent", "Contract"], {
+    contractType: z.enum(["PERMANENT", "CONTRACT"], {
       errorMap: () => ({ message: "Invalid Contract Type" }),
     }),
     startDate: z.string(),
     endDate: z.string().nullable().optional(),
-    employmentBasis: z.enum(["Full-time", "Part-time", "Casual"], {
+    employmentBasis: z.enum(["FULL TIME", "PART TIME", "CASUAL"], {
       errorMap: () => ({ message: "Invalid Employment Basis" }),
     }),
     hoursPerWeek: z.string(),
   })
-  .transform((data) => {
-    if (data.employmentBasis === "Casual") {
-      return {
-        ...data,
-        hoursPerWeek: "Casual",
-      };
+  .refine(
+    //Separate validation for hoursPerWeek, where employmentBasis = CASUAL
+    (data) => {
+      if (data.employmentBasis === "CASUAL") {
+        return data.hoursPerWeek === "casual";
+      }
+      return true;
+    },
+    {
+      message: "Must input 'casual' for casual employees",
+      path: ["hoursPerWeek"],
     }
-    return data;
-  });
+  )
+  .refine(
+    //Separate validation for hoursPerWeek, where employmentBasis = FULL TIME or PART TIME
+    (data) => {
+      if (
+        data.employmentBasis === "FULL TIME" ||
+        data.employmentBasis === "PART TIME"
+      ) {
+        return /^\d+(\.\d{1})?$/.test(data.hoursPerWeek);
+      }
+      return true;
+    },
+    {
+      message: "Must input a number (1dp. max)",
+      path: ["hoursPerWeek"],
+    }
+  )
+  .refine(
+    //Separate validation for endDate, where contractType = PERMANENT
+    (data) => {
+      if (data.contractType === "PERMANENT") {
+        return data.endDate === null;
+      }
+      return true;
+    },
+    {
+      message: "Permanent employees must not have an end date",
+      path: ["endDate"],
+    }
+  );
+// .transform((data) => {
+//   if (data.employmentBasis === "CASUAL") {
+//     return {
+//       ...data,
+//       hoursPerWeek: "Casual",
+//     };
+//   }
+//   return data;
+// });
 
 export type EmployeeFormData = z.infer<typeof schema>;

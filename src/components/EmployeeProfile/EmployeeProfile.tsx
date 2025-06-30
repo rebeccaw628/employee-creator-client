@@ -12,7 +12,7 @@ interface EmployeeProfileProps {
 const EmployeeProfile = ({ employee }: EmployeeProfileProps) => {
   return (
     <div className="flex flex-col gap-6 border relative border-amber-700">
-      <h1> Employee Profile</h1>
+      {/* <h1> Employee Profile</h1>
       <div className="flex gap-20">
         <div className="flex flex-col gap-4">
           <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200">
@@ -72,7 +72,7 @@ const EmployeeProfile = ({ employee }: EmployeeProfileProps) => {
         }
       >
         <IconAndTextLabel icon={faPenToSquare} text={"Edit Profile"} />
-      </Button>
+      </Button> */}
     </div>
   );
 };

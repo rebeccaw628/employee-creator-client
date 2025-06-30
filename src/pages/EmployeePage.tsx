@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { getEmployeeById, type Employee } from "../services/employees-services";
+import { useNavigate, useParams } from "react-router";
+import {
+  getEmployeeById,
+  mapEmployee,
+  mapToAPIEmployee,
+  updateEmployeeById,
+  type Employee,
+} from "../services/employees-services";
 import EmployeeProfile from "../components/EmployeeProfile/EmployeeProfile";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import Button from "../components/Button/Button";
@@ -9,27 +15,93 @@ import TextLabel from "../components/TextLabel/TextLabel";
 import { getEmploymentYears, displayDate } from "../services/utils";
 import EmployeeForm from "../components/EmployeeForm/EmployeeForm";
 import type { EmployeeFormData } from "../components/EmployeeForm/schema";
+import Modal from "../components/Modal/Modal";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useAppDispatch,
+  useAppSelector,
+  type AppDispatch,
+  type RootState,
+} from "../redux/store";
 
 const EmployeePage = () => {
-  const [employee, setEmployee] = useState<Employee | null>(null);
-  const [showForm, setShowForm] = useState<boolean>(false);
-  const { id } = useParams();
+  const [employee, setEmployee] = useState<Employee>({
+    id: 0,
+    firstName: "",
+    lastName: "",
+    middleName: "",
+    position: "",
+    email: "",
+    mobile: "",
+    address: "",
+    city: "",
+    state: "NSW",
+    postcode: "",
+    contractType: "PERMANENT",
+    startDate: "",
+    endDate: "",
+    employmentBasis: "FULL TIME",
+    hoursPerWeek: "",
+  });
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
+  const navigate = useNavigate();
+  const { id } = useParams();
   const numberID = Number(id);
 
-  const handleUpdate = () => {
-    setShowForm(!showForm);
+  // const dispatch = useAppDispatch();
+  // const employeeProfile = useAppSelector(
+  //   (state) => state.employee.selectedEmployee
+  // );
+
+  const handleUpdateModal = () => {
+    setShowModal(!showModal);
   };
 
   useEffect(() => {
-    getEmployeeById(numberID)
-      .then((data) => setEmployee(data))
-      .catch((e) => console.warn(e));
+    const fetchEmployee = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const employee = await getEmployeeById(numberID);
+        setEmployee(employee);
+      } catch (e) {
+        setError("Failed to retrieve employee information");
+        console.warn(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEmployee();
   }, []);
 
-  function handleSave(employee: Employee | null): unknown {
-    throw new Error("Function not implemented.");
-  }
+  const handleSave = async (numberID: number, data: EmployeeFormData) => {
+    console.log("updating employee info");
+    console.log("form data", data);
+    console.log(mapToAPIEmployee(data));
+    const mappedData = mapToAPIEmployee(data);
+    console.log("mapped data to send to API", mappedData);
+    try {
+      setSaving(true);
+      const updatedEmployee = await updateEmployeeById(numberID, mappedData);
+      console.log("updated info", updatedEmployee);
+      const mappedEmployee = mapEmployee(updatedEmployee);
+      console.log("mapped to FE data", mappedEmployee);
+      setEmployee(mappedEmployee);
+      setShowModal(false);
+    } catch (e) {
+      setError("Failed to update employee information");
+      console.warn(e);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div>Loading employee details...</div>;
+  if (error) return <div>Error alert: {error}</div>;
 
   return (
     <div className="w-4/5 flex flex-col gap-6 border relative border-amber-700">
@@ -45,59 +117,73 @@ const EmployeePage = () => {
             />
           </div>
           <p>
-            {employee?.firstName} {employee?.lastName}
+            {employee.firstName} {employee.lastName}
           </p>
 
-          <p>ID: {employee?.id} </p>
+          <p>ID: {employee.id} </p>
         </div>
         <div className="flex flex-col gap-6 justify-start items-start">
           <h3>BASIC INFORMATION</h3>
-          <TextLabel label={"First Name"} value={employee?.firstName} />
-          <TextLabel label={"Middle Name"} value={employee?.middleName} />
-          <TextLabel label={"Last Name"} value={employee?.lastName} />
+          <TextLabel label={"First Name"} value={employee.firstName} />
+          <TextLabel label={"Middle Name"} value={employee.middleName} />
+          <TextLabel label={"Last Name"} value={employee.lastName} />
           <h3 className="mt-4">CONTACT INFORMATION</h3>
-          <TextLabel label={"Email"} value={employee?.email} />
-          <TextLabel label={"Mobile"} value={employee?.mobile} />
+          <TextLabel label={"Email"} value={employee.email} />
+          <TextLabel label={"Mobile"} value={employee.mobile} />
           <TextLabel
             label={"Address"}
-            value={`${employee?.address}, ${employee?.city}, ${employee?.postcode}`}
+            value={`${employee?.address}, ${employee.city}, ${employee.postcode}`}
           />
-          <TextLabel label={"State"} value={employee?.state} />
+          <TextLabel label={"State"} value={employee.state} />
         </div>
         <div className="flex flex-col gap-6 justify-start items-start">
           <h3>EMPLOYMENT INFORMATION</h3>
-          <TextLabel label={"Position"} value={employee?.jobTitle} />
-          <TextLabel label={"Contract Type"} value={employee?.contractType} />
+          <TextLabel label={"Position"} value={employee.position} />
+          <TextLabel label={"Contract Type"} value={employee.contractType} />
           <TextLabel
             label={"Employment Basis"}
-            value={employee?.employmentBasis}
+            value={employee.employmentBasis}
           />
+          {employee.employmentBasis != "CASUAL" && (
+            <TextLabel label={"Hours Per Week"} value={employee.hoursPerWeek} />
+          )}
           <TextLabel
             label={"Years at Company"}
-            value={
-              employee?.startDate && getEmploymentYears(employee.startDate)
-            }
+            value={getEmploymentYears(employee.startDate)}
           />
           <TextLabel
             label={"Start Date"}
-            value={employee?.startDate && displayDate(employee.startDate)}
+            value={displayDate(employee.startDate)}
           />
-          <TextLabel
-            label={"End Date"}
-            value={employee?.endDate && displayDate(employee.endDate)}
-          />
+          {employee.endDate && (
+            <TextLabel
+              label={"End Date"}
+              value={displayDate(employee.endDate)}
+            />
+          )}
         </div>
       </div>
       <Button
         variants={
           "h-10 w-fit cursor-pointer absolute bottom-0 right-0 hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl right-[0]"
         }
-        onClick={handleUpdate}
+        onClick={handleUpdateModal}
       >
         <IconAndTextLabel icon={faPenToSquare} text={"Edit Profile"} />
       </Button>
-      {showForm && (
-        <EmployeeForm onSubmit={() => handleSave(employee)} formType={"edit"} />
+      {showModal && (
+        <Modal
+          heading="Edit Profile"
+          onClose={handleUpdateModal}
+          children={
+            <EmployeeForm
+              onSubmit={(data) => handleSave(numberID, data)}
+              // onDiscard={handleDiscard}
+              formType={"edit"}
+              existingValues={employee}
+            />
+          }
+        ></Modal>
       )}
     </div>
   );

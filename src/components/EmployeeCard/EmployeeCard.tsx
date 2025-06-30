@@ -27,7 +27,7 @@ const EmployeeCard = ({ employee }: EmployeeCardProps) => {
         <p className="text-sm text-gray-500">{employee.mobile}</p>
       </div>
       <div className="flex flex-col col-span-4">
-        <p className="truncate">{employee.jobTitle}</p>
+        <p className="truncate">{employee.position}</p>
         <p className="text-sm text-gray-500">{`Start Date: ${displayDate(
           employee.startDate
         )}`}</p>
