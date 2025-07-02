@@ -34,3 +34,11 @@ export const getContractClass = (type: string) => {
   };
   return styles[type as ContractType];
 };
+
+export const displayForm = (value: string) => {
+  return value.split("_").join(" ");
+};
+
+export const APIForm = (value: string) => {
+  return value.split(" ").join("_");
+};

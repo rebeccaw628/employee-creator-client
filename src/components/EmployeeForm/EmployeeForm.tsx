@@ -5,6 +5,11 @@ import InputText from "./InputText/InputText";
 import Dropdown from "./Dropdown/Dropdown";
 import Button from "../Button/Button";
 import { useEffect } from "react";
+import {
+  contractOptions,
+  employmentOptions,
+  stateOptions,
+} from "../../types/option-types";
 
 interface EmployeeFormProps {
   onSubmit: (data: EmployeeFormData) => unknown;
@@ -59,6 +64,7 @@ const EmployeeForm = ({
             type="text"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
           <InputText
             name="middleName"
@@ -67,6 +73,7 @@ const EmployeeForm = ({
             type="text"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
           <InputText
             name="lastName"
@@ -75,6 +82,7 @@ const EmployeeForm = ({
             type="text"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
         </div>
         <div className="flex flex-col gap-6 justify-start items-start">
@@ -86,6 +94,7 @@ const EmployeeForm = ({
             type="text"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
           <InputText
             name="mobile"
@@ -94,6 +103,7 @@ const EmployeeForm = ({
             type="text"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
           <InputText
             name="address"
@@ -102,6 +112,7 @@ const EmployeeForm = ({
             type="text"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
           <InputText
             name="city"
@@ -110,12 +121,13 @@ const EmployeeForm = ({
             type="text"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
           <Dropdown
             name="state"
             id="state"
             label="State"
-            options={["NSW", "VIC", "QLD", "SA", "WA", "TAS", "ACT", "NT"]}
+            options={stateOptions}
             register={register}
             errors={errors}
           />
@@ -126,6 +138,7 @@ const EmployeeForm = ({
             type="text"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
         </div>
         <div className="flex flex-col gap-6 justify-start items-start">
@@ -137,12 +150,13 @@ const EmployeeForm = ({
             type="text"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
           <Dropdown
             name="contractType"
             id="contractType"
             label="Contract Type"
-            options={["PERMANENT", "CONTRACT"]}
+            options={contractOptions}
             register={register}
             errors={errors}
           />
@@ -150,7 +164,7 @@ const EmployeeForm = ({
             name="employmentBasis"
             id="employmentBasis"
             label="Employment Basis"
-            options={["FULL TIME", "PART TIME", "CASUAL"]}
+            options={employmentOptions}
             register={register}
             errors={errors}
           />
@@ -162,6 +176,7 @@ const EmployeeForm = ({
             isDisabled={employmentBasis === "CASUAL"}
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
           <InputText
             name="startDate"
@@ -170,6 +185,7 @@ const EmployeeForm = ({
             type="date"
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
           <InputText
             name="endDate"
@@ -179,6 +195,7 @@ const EmployeeForm = ({
             isDisabled={contractType === "PERMANENT"}
             register={register}
             errors={errors}
+            variants={{ wrapperClass: "flex flex-col items-start" }}
           />
         </div>
       </div>
@@ -187,7 +204,8 @@ const EmployeeForm = ({
           variants={
             "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-red-500 hover:text-white py-2 px-3 border rounded-3xl right-[0]"
           }
-          type="reset"
+          type="button"
+          onClick={() => reset(existingValues)}
         >
           Discard Changes
         </Button>

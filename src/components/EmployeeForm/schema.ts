@@ -30,8 +30,12 @@ export const schema = z
     }),
     hoursPerWeek: z.string(),
   })
+  .refine((data) => data.endDate && data.endDate > data.startDate, {
+    message: "End date must not be before start date",
+    path: ["endDate"],
+  })
   .refine(
-    //Separate validation for hoursPerWeek, where employmentBasis = CASUAL
+    //Cross-field validation for hoursPerWeek, where employmentBasis = CASUAL
     (data) => {
       if (data.employmentBasis === "CASUAL") {
         return data.hoursPerWeek === "casual";
@@ -44,7 +48,7 @@ export const schema = z
     }
   )
   .refine(
-    //Separate validation for hoursPerWeek, where employmentBasis = FULL TIME or PART TIME
+    //Cross-field validation for hoursPerWeek, where employmentBasis = FULL TIME or PART TIME
     (data) => {
       if (
         data.employmentBasis === "FULL TIME" ||
@@ -60,7 +64,7 @@ export const schema = z
     }
   )
   .refine(
-    //Separate validation for endDate, where contractType = PERMANENT
+    //Cross-field validation for endDate, where contractType = PERMANENT
     (data) => {
       if (data.contractType === "PERMANENT") {
         return data.endDate === null;

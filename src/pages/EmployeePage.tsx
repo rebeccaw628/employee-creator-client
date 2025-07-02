@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
   getEmployeeById,
-  mapEmployee,
-  mapToAPIEmployee,
   updateEmployeeById,
   type Employee,
 } from "../services/employees-services";
@@ -81,16 +79,16 @@ const EmployeePage = () => {
   const handleSave = async (numberID: number, data: EmployeeFormData) => {
     console.log("updating employee info");
     console.log("form data", data);
-    console.log(mapToAPIEmployee(data));
-    const mappedData = mapToAPIEmployee(data);
-    console.log("mapped data to send to API", mappedData);
+    // console.log(mapToAPIEmployee(data));
+    // const mappedData = mapToAPIEmployee(data);
+    // console.log("mapped data to send to API", mappedData);
     try {
       setSaving(true);
-      const updatedEmployee = await updateEmployeeById(numberID, mappedData);
+      const updatedEmployee = await updateEmployeeById(numberID, data);
       console.log("updated info", updatedEmployee);
-      const mappedEmployee = mapEmployee(updatedEmployee);
-      console.log("mapped to FE data", mappedEmployee);
-      setEmployee(mappedEmployee);
+      // const mappedEmployee = mapEmployee(updatedEmployee);
+      // console.log("mapped to FE data", mappedEmployee);
+      setEmployee(updatedEmployee);
       setShowModal(false);
     } catch (e) {
       setError("Failed to update employee information");
@@ -165,7 +163,7 @@ const EmployeePage = () => {
       </div>
       <Button
         variants={
-          "h-10 w-fit cursor-pointer absolute bottom-0 right-0 hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl right-[0]"
+          "h-10 w-fit cursor-pointer absolute bottom-0 right-0 hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl"
         }
         onClick={handleUpdateModal}
       >
