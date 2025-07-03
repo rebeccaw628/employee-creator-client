@@ -30,7 +30,7 @@ const EmployeePage = () => {
     contractType: "PERMANENT",
     startDate: "",
     endDate: "",
-    employmentBasis: "FULL TIME",
+    employmentBasis: "FULL_TIME",
     hoursPerWeek: "",
   });
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -123,7 +123,7 @@ const EmployeePage = () => {
           <TextLabel label={"Contract Type"} value={employee.contractType} />
           <TextLabel
             label={"Employment Basis"}
-            value={employee.employmentBasis}
+            value={employee.employmentBasis.replace("_", " ")}
           />
           {employee.employmentBasis != "CASUAL" && (
             <TextLabel label={"Hours Per Week"} value={employee.hoursPerWeek} />
@@ -161,7 +161,7 @@ const EmployeePage = () => {
               onSubmit={(data) => handleSave(numberID, data)}
               // onDiscard={handleDiscard}
               formType={"edit"}
-              existingValues={{...employee, }}
+              existingValues={{ ...employee }}
             />
           }
         ></Modal>

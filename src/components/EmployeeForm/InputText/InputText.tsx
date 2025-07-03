@@ -48,7 +48,7 @@ const InputText = ({
         // {...(onChange != undefined ? { onChange } : {})}
         checked={type === "checkbox" ? checked : undefined}
       />
-      {errors[name] && (
+      {errors?.errors[name] && (
         <small className="text-red-700 font-semibold">
           {errors[name].message}
         </small>

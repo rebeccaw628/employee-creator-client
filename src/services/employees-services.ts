@@ -120,3 +120,13 @@ export const createEmployee = async (data: EmployeeFormData) => {
   }
   return await response.json();
 };
+
+export const deleteEmployeeById = async (id: number) => {
+  console.log(id);
+  const response = await fetch(`${baseURL}/employees/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    throw new Error("Failed to delete employee");
+  }
+};

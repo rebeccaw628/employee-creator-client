@@ -8,9 +8,6 @@ interface ModalProps {
 }
 
 const Modal = ({ children, onClose, heading }: ModalProps) => {
-  // const onBackgroundClick = () => {
-  //   onClose();
-  // };
   const onContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
@@ -26,10 +23,7 @@ const Modal = ({ children, onClose, heading }: ModalProps) => {
   }, []);
 
   return (
-    <div
-      // onClick={onBackgroundClick}
-      className="absolute top-[0] left-[0] bottom-[0] right-[0] flex justify-center bg-white"
-    >
+    <div className="absolute top-[0] left-[0] bottom-[0] right-[0] flex justify-center bg-white">
       <div onClick={onContentClick}>
         <div className="flex justify-between mb-10">
           <h2>{heading}</h2>

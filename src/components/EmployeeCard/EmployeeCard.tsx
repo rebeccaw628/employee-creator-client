@@ -10,12 +10,11 @@ import Button from "../Button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-interface EmployeeCardProps {
+interface EmployeeCardProps extends React.PropsWithChildren {
   employee: Employee;
-  // onView: () => unknown;
 }
 
-const EmployeeCard = ({ employee }: EmployeeCardProps) => {
+const EmployeeCard = ({ employee, children }: EmployeeCardProps) => {
   const employmentBasisFormatted = displayForm(employee.employmentBasis);
   return (
     <div className="grid grid-cols-12 gap-x-4 px-6 py-4 text-left border border-gray-200 rounded-lg">
@@ -52,7 +51,8 @@ const EmployeeCard = ({ employee }: EmployeeCardProps) => {
           {employee.contractType}
         </p>
       </div>
-      <Button
+      {children}
+      {/* <Button
         variants={
           "h-10 w-fit self-center justify-self-center cursor-pointer hover:border-[#646cff] py-2 px-3 "
         }
@@ -61,7 +61,7 @@ const EmployeeCard = ({ employee }: EmployeeCardProps) => {
           icon={faTrash}
           className="text-gray-700 text-xl hover:text-red-700 hover:shadow-lg"
         />
-      </Button>
+      </Button> */}
     </div>
   );
 };

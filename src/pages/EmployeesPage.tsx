@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   createEmployee,
+  deleteEmployeeById,
   getAllEmployees,
   type Employee,
 } from "../services/employees-services";
@@ -13,6 +14,7 @@ import {
   faIdCard,
   faMobileScreenButton,
   faPlus,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../components/Button/Button";
 import Modal from "../components/Modal/Modal";
@@ -32,26 +34,44 @@ const EmployeesPage = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [employeeID, setEmployeeID] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const params = searchParams.toString().replace("+", "_");
+    setIsFilterOpen(false);
+    fetchAllEmployees(params);
+  }, [searchParams]);
+
+  const fetchAllEmployees = (params?: string) => {
+    setLoading(true);
+    getAllEmployees(params)
+      .then((data) => {
+        setEmployees(data);
+      })
+      .catch((e) => console.warn(e))
+      .finally(() => setLoading(false));
+  };
 
   const handleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
   };
 
-  useEffect(() => {
-    const params = searchParams.toString().replace("+", "_");
-    console.log(searchParams);
-    setLoading(true);
-    getAllEmployees(params)
-      .then((data) => {
-        setEmployees(data);
-        setIsFilterOpen(false);
-        console.log(data);
-      })
-      .catch((e) => console.warn(e))
-      .finally(() => setLoading(false));
-  }, [searchParams]);
+  const handleDelete = async (id: number) => {
+    console.log("deleting employee with id:", id);
+    await deleteEmployeeById(id);
+    closeConfirmationModal();
+    fetchAllEmployees();
+  };
+
+  const openConfirmationModal = (id: number) => {
+    console.log("modal triggered");
+    setEmployeeID(id);
+  };
+
+  const closeConfirmationModal = () => {
+    setEmployeeID(null);
+  };
 
   if (loading) return <div>Loading employees...</div>;
 
@@ -110,9 +130,54 @@ const EmployeesPage = () => {
       </div>
       {employees.map((employee) => (
         <div key={employee.id} className="flex">
-          <EmployeeCard employee={employee} />
+          <EmployeeCard employee={employee}>
+            {" "}
+            <Button
+              variants={
+                "h-10 w-fit self-center justify-self-center cursor-pointer hover:border-[#646cff] py-2 px-3 "
+              }
+              onClick={() => {
+                openConfirmationModal(employee.id);
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="text-gray-700 text-xl hover:text-red-700 hover:shadow-lg"
+              />
+            </Button>
+          </EmployeeCard>
         </div>
       ))}
+      {employeeID && (
+        <Modal
+          children={
+            <div>
+              <p>
+                Are you sure you want to delete this employee profile?{" "}
+                <span>Click OK to confirm delete or CANCEL to go back.</span>
+              </p>
+              <Button
+                variants={
+                  "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-red-500 hover:text-white py-2 px-3 border rounded-3xl"
+                }
+                onClick={closeConfirmationModal}
+              >
+                CANCEL
+              </Button>
+              <Button
+                variants={
+                  "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl"
+                }
+                onClick={() => handleDelete(employeeID)}
+              >
+                OK
+              </Button>
+            </div>
+          }
+          heading={"Confirm Delete"}
+          onClose={closeConfirmationModal}
+        />
+      )}
     </div>
   );
 };
