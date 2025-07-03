@@ -2,12 +2,13 @@ import { useEffect } from "react";
 import Button from "../Button/Button";
 
 interface ModalProps {
-  children: React.ReactNode;
-  onClose: () => unknown;
   heading: string;
+  onClose: () => unknown;
+  variants: string;
+  children: React.ReactNode;
 }
 
-const Modal = ({ children, onClose, heading }: ModalProps) => {
+const Modal = ({ heading, onClose, variants, children }: ModalProps) => {
   const onContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
@@ -23,11 +24,17 @@ const Modal = ({ children, onClose, heading }: ModalProps) => {
   }, []);
 
   return (
-    <div className="absolute top-[0] left-[0] bottom-[0] right-[0] flex justify-center bg-white">
-      <div onClick={onContentClick}>
+    <div
+      className={`fixed inset-0 flex justify-center items-center ${variants}`}
+      onClick={onClose}
+    >
+      <div
+        onClick={onContentClick}
+        className="h-auto p-4 rounded bg-white border"
+      >
         <div className="flex justify-between mb-10">
-          <h2>{heading}</h2>
-          <Button onClick={() => onClose()} variants={""}>
+          <h2 className="text-xl">{heading}</h2>
+          <Button onClick={onClose} variants={"cursor-pointer"}>
             x
           </Button>
         </div>

@@ -59,8 +59,8 @@ const EmployeesPage = () => {
 
   const handleDelete = async (id: number) => {
     console.log("deleting employee with id:", id);
-    await deleteEmployeeById(id);
     closeConfirmationModal();
+    await deleteEmployeeById(id);
     fetchAllEmployees();
   };
 
@@ -76,7 +76,7 @@ const EmployeesPage = () => {
   if (loading) return <div>Loading employees...</div>;
 
   return (
-    <div className="w-4/5 border border-red-700 relative">
+    <div className="w-4/5 h-auto border border-red-700 relative">
       <div className="flex justify-between">
         <h1 className="justify-self-start text-2xl mb-4">All Employees</h1>
         <div className="flex justify-center items-center gap-4">
@@ -150,12 +150,14 @@ const EmployeesPage = () => {
       ))}
       {employeeID && (
         <Modal
-          children={
-            <div>
-              <p>
-                Are you sure you want to delete this employee profile?{" "}
-                <span>Click OK to confirm delete or CANCEL to go back.</span>
-              </p>
+          heading={"Confirm Delete"}
+          onClose={closeConfirmationModal}
+          variants={"bg-black/90 py-8"}
+        >
+          <div className="flex flex-col gap-6">
+            <p>Are you sure you want to delete this employee profile?</p>
+            <p>Click OK to confirm deletion or CANCEL to go back.</p>
+            <div className="flex gap-4 justify-center">
               <Button
                 variants={
                   "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-red-500 hover:text-white py-2 px-3 border rounded-3xl"
@@ -173,10 +175,8 @@ const EmployeesPage = () => {
                 OK
               </Button>
             </div>
-          }
-          heading={"Confirm Delete"}
-          onClose={closeConfirmationModal}
-        />
+          </div>
+        </Modal>
       )}
     </div>
   );

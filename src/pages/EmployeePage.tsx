@@ -156,6 +156,7 @@ const EmployeePage = () => {
         <Modal
           heading="Edit Profile"
           onClose={handleUpdateModal}
+          variants={"bg-white"}
           children={
             <EmployeeForm
               onSubmit={(data) => handleSave(numberID, data)}
