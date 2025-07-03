@@ -63,23 +63,6 @@ const EmployeeCard = ({ employee }: EmployeeCardProps) => {
         />
       </Button>
     </div>
-
-    //old format
-    //  <div className="grid grid-cols-[1fr_1fr_2fr_1fr] gap-x-4">
-    //   <div className="flex flex-col">
-    //     <h3>{`${employee.firstName} ${employee?.middleName} ${employee.lastName}`}</h3>
-    //     <IconAndTextLabel icon={faIdCard} text={`ID: ${employee.id}`} />
-    //   </div>
-    //   <div className="flex flex-col">
-    //     <IconAndTextLabel icon={faInbox} text={employee.email} />
-    //     <IconAndTextLabel icon={faMobileScreenButton} text={employee.mobile} />
-    //   </div>
-    //   <IconAndTextLabel icon={faBriefcase} text={employee.jobTitle} />
-    //   <div className="flex">
-    //     <p>{employee.employmentBasis}</p>
-    //     <p>{employee.contractType}</p>
-    //   </div>
-    // </div>
   );
 };
 

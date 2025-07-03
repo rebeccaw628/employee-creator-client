@@ -33,14 +33,14 @@ const Dropdown = ({
           Select
         </option>
         {options.map((option) => (
-          <option key={option} value={option}>
+          <option key={option} value={option.replace(" ", "_")}>
             {option}
           </option>
         ))}
       </select>
-      {errors.category && (
+      {errors[id] && (
         <small className="text-red-700 font-semibold">
-          {errors.id.message}
+          {errors[id].message}
         </small>
       )}
     </div>

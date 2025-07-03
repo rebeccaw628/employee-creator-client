@@ -25,15 +25,23 @@ export const schema = z
     }),
     startDate: z.string(),
     endDate: z.string().nullable().optional(),
-    employmentBasis: z.enum(["FULL TIME", "PART TIME", "CASUAL"], {
+    employmentBasis: z.enum(["FULL_TIME", "PART_TIME", "CASUAL"], {
       errorMap: () => ({ message: "Invalid Employment Basis" }),
     }),
+    // .transform((option) => option.replace(" ", "_")),
+    // .pipe(z.enum(["FULL_TIME", "PART_TIME", "CASUAL"])),
     hoursPerWeek: z.string(),
   })
-  .refine((data) => data.endDate && data.endDate > data.startDate, {
-    message: "End date must not be before start date",
-    path: ["endDate"],
-  })
+  .refine(
+    (data) => {
+      if (data.endDate == null) return true;
+      return data.endDate > data.startDate;
+    },
+    {
+      message: "End date must not be before start date",
+      path: ["endDate"],
+    }
+  )
   .refine(
     //Cross-field validation for hoursPerWeek, where employmentBasis = CASUAL
     (data) => {
@@ -51,8 +59,8 @@ export const schema = z
     //Cross-field validation for hoursPerWeek, where employmentBasis = FULL TIME or PART TIME
     (data) => {
       if (
-        data.employmentBasis === "FULL TIME" ||
-        data.employmentBasis === "PART TIME"
+        data.employmentBasis === "FULL_TIME" ||
+        data.employmentBasis === "PART_TIME"
       ) {
         return /^\d+(\.\d{1})?$/.test(data.hoursPerWeek);
       }
@@ -76,14 +84,4 @@ export const schema = z
       path: ["endDate"],
     }
   );
-// .transform((data) => {
-//   if (data.employmentBasis === "CASUAL") {
-//     return {
-//       ...data,
-//       hoursPerWeek: "Casual",
-//     };
-//   }
-//   return data;
-// });
-
 export type EmployeeFormData = z.infer<typeof schema>;

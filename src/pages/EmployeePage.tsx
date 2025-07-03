@@ -5,7 +5,6 @@ import {
   updateEmployeeById,
   type Employee,
 } from "../services/employees-services";
-import EmployeeProfile from "../components/EmployeeProfile/EmployeeProfile";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import Button from "../components/Button/Button";
 import IconAndTextLabel from "../components/IconAndTextLabel/IconAndTextLabel";
@@ -14,13 +13,6 @@ import { getEmploymentYears, displayDate } from "../services/utils";
 import EmployeeForm from "../components/EmployeeForm/EmployeeForm";
 import type { EmployeeFormData } from "../components/EmployeeForm/schema";
 import Modal from "../components/Modal/Modal";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  useAppDispatch,
-  useAppSelector,
-  type AppDispatch,
-  type RootState,
-} from "../redux/store";
 
 const EmployeePage = () => {
   const [employee, setEmployee] = useState<Employee>({
@@ -77,17 +69,9 @@ const EmployeePage = () => {
   }, []);
 
   const handleSave = async (numberID: number, data: EmployeeFormData) => {
-    console.log("updating employee info");
-    console.log("form data", data);
-    // console.log(mapToAPIEmployee(data));
-    // const mappedData = mapToAPIEmployee(data);
-    // console.log("mapped data to send to API", mappedData);
     try {
       setSaving(true);
       const updatedEmployee = await updateEmployeeById(numberID, data);
-      console.log("updated info", updatedEmployee);
-      // const mappedEmployee = mapEmployee(updatedEmployee);
-      // console.log("mapped to FE data", mappedEmployee);
       setEmployee(updatedEmployee);
       setShowModal(false);
     } catch (e) {
@@ -103,7 +87,6 @@ const EmployeePage = () => {
 
   return (
     <div className="w-4/5 flex flex-col gap-6 border relative border-amber-700">
-      {/* <EmployeeProfile employee={employeeProfile} /> */}
       <h1> Employee Profile</h1>
       <div className="flex gap-20">
         <div className="flex flex-col gap-4">
@@ -178,7 +161,7 @@ const EmployeePage = () => {
               onSubmit={(data) => handleSave(numberID, data)}
               // onDiscard={handleDiscard}
               formType={"edit"}
-              existingValues={employee}
+              existingValues={{...employee, }}
             />
           }
         ></Modal>

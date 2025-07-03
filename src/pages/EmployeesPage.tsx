@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getAllEmployees, type Employee } from "../services/employees-services";
+import {
+  createEmployee,
+  getAllEmployees,
+  type Employee,
+} from "../services/employees-services";
 import EmployeeCard from "../components/EmployeeCard/EmployeeCard";
 import IconAndTextLabel from "../components/IconAndTextLabel/IconAndTextLabel";
 import {
@@ -16,7 +20,8 @@ import EmployeeProfile from "../components/EmployeeProfile/EmployeeProfile";
 import InputText from "../components/EmployeeForm/InputText/InputText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Filter from "../components/Filter/Filter";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
+import type { EmployeeFormData } from "../components/EmployeeForm/schema";
 
 export interface DefaultFilterState {
   contractType: string[];
@@ -26,24 +31,12 @@ export interface DefaultFilterState {
 const EmployeesPage = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
-    null
-  );
-  // const [filters, setFilters] = useState<DefaultFilterState>({
-  //   contractType: [],
-  //   employmentBasis: [],
-  // });
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
-
-  // useEffect(() => {
-  //   console.log("Filters changed in parent:", filters);
-  // }, [filters]);
 
   const handleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
-    // console.log("current filter", filters);
   };
 
   useEffect(() => {
@@ -82,21 +75,15 @@ const EmployeesPage = () => {
               <FontAwesomeIcon icon={faFilter} /> Filter
             </Button>
             {isFilterOpen && (
-              <Filter
-                variants="flex flex-col items-start px-4 py-4 absolute w-50 right-0 gap-4 top-full bg-white border rounded shadow-lg"
-                // onCheckboxChange={handleCheckboxChange}
-                // filters={filters}
-                // setFilters={setFilters}
-              />
+              <Filter variants="flex flex-col items-start px-4 py-4 absolute w-50 right-0 gap-4 top-full bg-white border rounded shadow-lg" />
             )}
           </div>
-          <Button
-            variants={
-              "px-2 py-2 border border-gray-300 rounded-lg cursor-pointer"
-            }
+          <Link
+            to={`/employees/create`}
+            className="px-2 py-2 border border-gray-300 rounded-lg cursor-pointer"
           >
             <FontAwesomeIcon icon={faPlus} />
-          </Button>
+          </Link>
         </div>
       </div>
       <div className="grid grid-cols-12 gap-x-4 px-6 py-4">
@@ -126,11 +113,6 @@ const EmployeesPage = () => {
           <EmployeeCard employee={employee} />
         </div>
       ))}
-      {/* {isModalOpen && (
-        <Modal onClose={onClose} heading={"Employee Profile"}>
-          <EmployeeProfile employee={selectedEmployee} />
-        </Modal>
-      )} */}
     </div>
   );
 };

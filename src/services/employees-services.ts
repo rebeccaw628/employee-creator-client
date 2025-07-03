@@ -9,6 +9,8 @@ export type ContractType = "PERMANENT" | "CONTRACT";
 
 export type EmploymentBasis = "FULL TIME" | "PART TIME" | "CASUAL";
 
+export type APIEmploymentBasis = "FULL_TIME" | "PART_TIME" | "CASUAL";
+
 export interface Employee {
   id: number;
   firstName: string;
@@ -61,7 +63,7 @@ export interface APIEmployee {
   contract_type: ContractType;
   start_date: string;
   end_date?: string | null;
-  employment_basis: EmploymentBasis;
+  employment_basis: APIEmploymentBasis;
   hours_per_week: string;
 }
 
@@ -89,8 +91,9 @@ export const getEmployeeById = async (id: number): Promise<Employee> => {
 
 export const updateEmployeeById = async (
   id: number,
-  data: UpdateEmployee
+  data: EmployeeFormData
 ): Promise<Employee> => {
+  console.log("Updated Data being sent:", data);
   const response = await fetch(`${baseURL}/employees/${id}`, {
     method: "PATCH",
     headers: {
@@ -100,6 +103,20 @@ export const updateEmployeeById = async (
   });
   if (!response.ok) {
     throw new Error(`Could not find employee with id ${id}`);
+  }
+  return await response.json();
+};
+
+export const createEmployee = async (data: EmployeeFormData) => {
+  const response = await fetch(`${baseURL}/employees`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to create new employee");
   }
   return await response.json();
 };

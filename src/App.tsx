@@ -6,6 +6,7 @@ import EmployeePage from "./pages/EmployeePage";
 import NavBar from "./containers/NavBar/NavBar";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.ts";
+import CreateEmployeePage from "./pages/CreateEmployeePage.tsx";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/employees" element={<EmployeesPage />} />
+            <Route path="/employees/create" element={<CreateEmployeePage />} />
             <Route path="/employees/:id" element={<EmployeePage />} />
           </Routes>
         </div>

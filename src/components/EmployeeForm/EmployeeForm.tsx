@@ -207,16 +207,16 @@ const EmployeeForm = ({
           type="button"
           onClick={() => reset(existingValues)}
         >
-          Discard Changes
+          {formType === "edit" ? "Discard Changes" : "Discard"}
         </Button>
         <Button
           variants={
             "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl right-[0]"
           }
           type="submit"
-          onClick={testClick}
+          // onClick={testClick}
         >
-          Save Changes
+          {formType === "edit" ? "Save Changes" : "Add new employee"}
         </Button>
       </div>
     </form>
