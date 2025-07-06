@@ -22,12 +22,6 @@ const Filter = ({ variants }: FilterProps) => {
     contractType: [],
     employmentBasis: [],
   });
-  const [checkedFilters, setCheckedFilters] = useState<DefaultFilterState>({
-    contractType: [],
-    employmentBasis: [],
-  });
-
-  console.log("Filter props:", { variants, filters, setFilters });
 
   const [searchParams, setSearchParams] = useSearchParams();
 

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  createEmployee,
   deleteEmployeeById,
   getAllEmployees,
   type Employee,
@@ -18,12 +17,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../components/Button/Button";
 import Modal from "../components/Modal/Modal";
-import EmployeeProfile from "../components/EmployeeProfile/EmployeeProfile";
-import InputText from "../components/EmployeeForm/InputText/InputText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Filter from "../components/Filter/Filter";
 import { Link, useSearchParams } from "react-router";
-import type { EmployeeFormData } from "../components/EmployeeForm/schema";
+import { useSelector } from "react-redux";
+import { useAppDispatch, type RootState } from "../redux/store";
+import { searchEmployee } from "../redux/employeeSlice";
+import SearchBar from "../components/SearchBar/SearchBar";
 
 export interface DefaultFilterState {
   contractType: string[];
@@ -36,6 +36,7 @@ const EmployeesPage = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [employeeID, setEmployeeID] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const params = searchParams.toString().replace("+", "_");
@@ -73,18 +74,28 @@ const EmployeesPage = () => {
     setEmployeeID(null);
   };
 
+  const dispatch = useAppDispatch();
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const query = searchInputRef?.current?.value;
+    if (query && query.trim()) {
+      dispatch(searchEmployee(query.trim()));
+    }
+  };
+
+  const { results, status, error } = useSelector(
+    (state: RootState) => state.employee
+  );
+
   if (loading) return <div>Loading employees...</div>;
 
   return (
     <div className="w-4/5 h-auto border border-red-700 relative">
       <div className="flex justify-between">
         <h1 className="justify-self-start text-2xl mb-4">All Employees</h1>
-        <div className="flex justify-center items-center gap-4">
-          <input
-            type="search"
-            placeholder="Search..."
-            className="placeholder-gray-500 px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
-          />
+        <div className="flex justify-center items-center gap-6">
+          <SearchBar ref={searchInputRef} onSubmit={handleSearch} />
           <div className="flex flex-col relative">
             <Button
               variants={

@@ -26,7 +26,7 @@ export interface Employee {
   contractType: ContractType;
   startDate: string; // ISO date string (e.g. "2025-06-26")
   endDate?: string | null;
-  employmentBasis: EmploymentBasis;
+  employmentBasis: APIEmploymentBasis;
   hoursPerWeek: string;
 }
 
@@ -67,11 +67,29 @@ export interface APIEmployee {
   hours_per_week: string;
 }
 
+interface CountObject {
+  type: string;
+  count: number;
+}
+
+interface NameAndId {
+  name: string;
+  id: number;
+}
+
+export interface EmployeeStats {
+  employmentBasis: CountObject[];
+  contractType: CountObject[];
+  endingThisMonth: NameAndId[];
+}
+
 export const getAllEmployees = async (
   queryParams?: string
 ): Promise<Employee[]> => {
   const response = await fetch(
-    queryParams ? `${baseURL}/employees?${queryParams}` : `${baseURL}/employees`
+    queryParams
+      ? `${baseURL}/employees/?${queryParams}`
+      : `${baseURL}/employees/`
   );
   if (!response.ok) {
     throw new Error("Failed to retrive employee list");
@@ -81,9 +99,29 @@ export const getAllEmployees = async (
 };
 
 export const getEmployeeById = async (id: number): Promise<Employee> => {
-  const response = await fetch(`${baseURL}/employees/${id}`);
+  const response = await fetch(`${baseURL}/employees/${id}/`);
   if (!response.ok) {
-    throw new Error(`Could not find emplopyee with id ${id}`);
+    throw new Error(`Could not find employee with id ${id}`);
+  }
+  const data = await response.json();
+  return data;
+};
+
+export const getEmployeeStats = async (): Promise<EmployeeStats> => {
+  const response = await fetch(`${baseURL}/employees/stats/`);
+  if (!response.ok) {
+    throw new Error(`Could not get employee stats`);
+  }
+  const data = await response.json();
+  return data;
+};
+
+export const getEmployeesBySearch = async (
+  searchTerm: string
+): Promise<Employee[]> => {
+  const response = await fetch(`${baseURL}/employees/?search=${searchTerm}`);
+  if (!response.ok) {
+    throw new Error(`No results for ${searchTerm}`);
   }
   const data = await response.json();
   return data;
@@ -94,7 +132,7 @@ export const updateEmployeeById = async (
   data: EmployeeFormData
 ): Promise<Employee> => {
   console.log("Updated Data being sent:", data);
-  const response = await fetch(`${baseURL}/employees/${id}`, {
+  const response = await fetch(`${baseURL}/employees/${id}/`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -108,7 +146,7 @@ export const updateEmployeeById = async (
 };
 
 export const createEmployee = async (data: EmployeeFormData) => {
-  const response = await fetch(`${baseURL}/employees`, {
+  const response = await fetch(`${baseURL}/employees/`, {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -123,7 +161,7 @@ export const createEmployee = async (data: EmployeeFormData) => {
 
 export const deleteEmployeeById = async (id: number) => {
   console.log(id);
-  const response = await fetch(`${baseURL}/employees/${id}`, {
+  const response = await fetch(`${baseURL}/employees/${id}/`, {
     method: "DELETE",
   });
   if (!response.ok) {
