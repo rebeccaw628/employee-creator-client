@@ -17,10 +17,10 @@ interface EmployeeCardProps extends React.PropsWithChildren {
 const EmployeeCard = ({ employee, children }: EmployeeCardProps) => {
   const employmentBasisFormatted = displayForm(employee.employmentBasis);
   return (
-    <div className="grid grid-cols-12 gap-x-4 px-6 py-4 text-left border border-gray-200 rounded-lg">
+    <div className="grid grid-cols-12 gap-x-6 px-6 py-4 text-left border border-gray-200 rounded-lg">
       <Link
         to={`/employees/${employee.id}`}
-        className="flex flex-col col-span-2 cursor-pointer w-[218px]"
+        className="flex flex-col col-span-2 cursor-pointer w-218px wrap-normal"
       >
         <h3>{`${employee.firstName} ${employee?.middleName} ${employee.lastName}`}</h3>
         <p className="text-sm text-gray-500">{`ID: ${employee.id}`} </p>
@@ -30,7 +30,7 @@ const EmployeeCard = ({ employee, children }: EmployeeCardProps) => {
         <p className="text-sm text-gray-500">{employee.mobile}</p>
       </div>
       <div className="flex flex-col col-span-4">
-        <p className="truncate">{employee.position}</p>
+        <p className="wrap-normal">{employee.position}</p>
         <p className="text-sm text-gray-500">{`Start Date: ${displayDate(
           employee.startDate
         )}`}</p>

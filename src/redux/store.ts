@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import employeeReducer from "./employeeSlice";
+import queryReducer from "./querySlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
   reducer: {
-    employee: employeeReducer,
+    query: queryReducer,
   },
 });
 

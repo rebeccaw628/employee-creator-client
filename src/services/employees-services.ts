@@ -115,11 +115,21 @@ export const getEmployeeStats = async (): Promise<EmployeeStats> => {
   const data = await response.json();
   return data;
 };
+//?search=john&employmentBasis=CASUAL
 
-export const getEmployeesBySearch = async (
-  searchTerm: string
+export const getEmployeesByQuery = async (
+  searchTerm?: string,
+  queryParams?: string
 ): Promise<Employee[]> => {
-  const response = await fetch(`${baseURL}/employees/?search=${searchTerm}`);
+  let url = `${baseURL}/employees/?search=${searchTerm}&${queryParams}`;
+  if (searchTerm && queryParams) {
+    url;
+  } else if (searchTerm) {
+    url = `${baseURL}/employees/?search=${searchTerm}`;
+  } else {
+    url = `${baseURL}/employees/?${queryParams}`;
+  }
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`No results for ${searchTerm}`);
   }

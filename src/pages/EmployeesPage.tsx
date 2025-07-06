@@ -21,14 +21,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Filter from "../components/Filter/Filter";
 import { Link, useSearchParams } from "react-router";
 import { useSelector } from "react-redux";
-import { useAppDispatch, type RootState } from "../redux/store";
-import { searchEmployee } from "../redux/employeeSlice";
+import { useAppDispatch, useAppSelector, type RootState } from "../redux/store";
+import { queryEmployees, setFilters, setSearch } from "../redux/querySlice";
 import SearchBar from "../components/SearchBar/SearchBar";
-
-export interface DefaultFilterState {
-  contractType: string[];
-  employmentBasis: string[];
-}
 
 const EmployeesPage = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -38,15 +33,36 @@ const EmployeesPage = () => {
   const [searchParams] = useSearchParams();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const params = searchParams.toString().replace("+", "_");
-    setIsFilterOpen(false);
-    fetchAllEmployees(params);
-  }, [searchParams]);
+  const dispatch = useAppDispatch();
+  const { search, filters, results, status } = useAppSelector(
+    (state) => state.query
+  );
 
-  const fetchAllEmployees = (params?: string) => {
+  useEffect(() => {
+    const searchTerm = searchParams.get("search") || "";
+    dispatch(setSearch(searchTerm));
+    dispatch(setFilters(searchParams.toString().replaceAll("+", "_")));
+  }, []);
+
+  useEffect(() => {
+    const params = searchParams.toString().replaceAll("+", "_");
+    console.log("params to send:", params);
+    setIsFilterOpen(false);
+    if (search || filters.contractType || filters.employmentBasis) {
+      dispatch(queryEmployees({ searchTerm: search, queryParams: params }));
+    } else {
+      fetchAllEmployees();
+    }
+    // fetchAllEmployees(params);
+  }, [
+    searchParams,
+    // search,
+    dispatch,
+  ]);
+
+  const fetchAllEmployees = () => {
     setLoading(true);
-    getAllEmployees(params)
+    getAllEmployees()
       .then((data) => {
         setEmployees(data);
       })
@@ -58,12 +74,12 @@ const EmployeesPage = () => {
     setIsFilterOpen(!isFilterOpen);
   };
 
-  const handleDelete = async (id: number) => {
-    console.log("deleting employee with id:", id);
-    closeConfirmationModal();
-    await deleteEmployeeById(id);
-    fetchAllEmployees();
-  };
+  // const handleDelete = async (id: number) => {
+  //   console.log("deleting employee with id:", id);
+  //   closeConfirmationModal();
+  //   await deleteEmployeeById(id);
+  //   fetchAllEmployees();
+  // };
 
   const openConfirmationModal = (id: number) => {
     console.log("modal triggered");
@@ -74,28 +90,12 @@ const EmployeesPage = () => {
     setEmployeeID(null);
   };
 
-  const dispatch = useAppDispatch();
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const query = searchInputRef?.current?.value;
-    if (query && query.trim()) {
-      dispatch(searchEmployee(query.trim()));
-    }
-  };
-
-  const { results, status, error } = useSelector(
-    (state: RootState) => state.employee
-  );
-
-  if (loading) return <div>Loading employees...</div>;
-
   return (
-    <div className="w-4/5 h-auto border border-red-700 relative">
+    <div className="w-4/5 h-auto">
       <div className="flex justify-between">
         <h1 className="justify-self-start text-2xl mb-4">All Employees</h1>
         <div className="flex justify-center items-center gap-6">
-          <SearchBar ref={searchInputRef} onSubmit={handleSearch} />
+          <SearchBar ref={searchInputRef} />
           <div className="flex flex-col relative">
             <Button
               variants={
@@ -139,7 +139,7 @@ const EmployeesPage = () => {
           variant={"col-span-2"}
         />
       </div>
-      {employees.map((employee) => (
+      {results.map((employee) => (
         <div key={employee.id} className="flex">
           <EmployeeCard employee={employee}>
             {" "}
@@ -181,7 +181,7 @@ const EmployeesPage = () => {
                 variants={
                   "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl"
                 }
-                onClick={() => handleDelete(employeeID)}
+                // onClick={() => handleDelete(employeeID)}
               >
                 OK
               </Button>

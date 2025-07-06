@@ -1,16 +1,41 @@
-import { type Ref } from "react";
+import { useRef, useState, type Ref } from "react";
 import Button from "../Button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { useSearchParams } from "react-router";
+import { setSearch } from "../../redux/querySlice";
 
 interface SearchBarProps {
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   ref: Ref<HTMLInputElement>;
 }
 
-const SearchBar = ({ onSubmit, ref }: SearchBarProps) => {
+const SearchBar = ({ ref }: SearchBarProps) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const searchValue = searchInputRef.current?.value;
+    console.log("searching:", searchValue);
+    dispatch(setSearch(searchValue));
+    // const existingFilters = `${searchParams.getAll(
+    //   "contractType"
+    // )}${searchParams.getAll("employmentBasis")}`;
+    // console.log("existingFilters to construct", existingFilters);
+    const newSearchParams = new URLSearchParams(searchParams);
+    console.log(newSearchParams);
+    if (searchValue) {
+      newSearchParams.set("search", searchValue);
+    } else {
+      newSearchParams.delete("search");
+    }
+    setSearchParams(newSearchParams);
+  };
+
   return (
-    <form className="flex gap-2" onSubmit={onSubmit}>
+    <form className="flex gap-2" onSubmit={handleSubmit}>
       <input
         ref={ref}
         name="search"

@@ -38,7 +38,6 @@ const EmployeePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const navigate = useNavigate();
   const { id } = useParams();
   const numberID = Number(id);
 
@@ -86,7 +85,7 @@ const EmployeePage = () => {
   if (error) return <div>Error alert: {error}</div>;
 
   return (
-    <div className="w-4/5 flex flex-col gap-6 border relative border-amber-700">
+    <div className="w-4/5 flex flex-col gap-6 relative">
       <h1> Employee Profile</h1>
       <div className="flex gap-20">
         <div className="flex flex-col gap-4">

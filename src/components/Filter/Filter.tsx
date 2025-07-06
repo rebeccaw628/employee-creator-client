@@ -3,6 +3,9 @@ import { contractOptions, employmentOptions } from "../../types/option-types";
 import Button from "../Button/Button";
 import InputText from "../EmployeeForm/InputText/InputText";
 import { useSearchParams } from "react-router";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { DefaultFilterState } from "./defaultFilterState";
+import { setFilters } from "../../redux/querySlice";
 // import type { DefaultFilterState } from "../../pages/EmployeesPage";
 
 interface FilterProps {
@@ -12,25 +15,25 @@ interface FilterProps {
   // setFilters: React.Dispatch<React.SetStateAction<DefaultFilterState>>;
 }
 
-export interface DefaultFilterState {
+export interface FilterState {
   contractType: string[];
   employmentBasis: string[];
 }
 
 const Filter = ({ variants }: FilterProps) => {
-  const [filters, setFilters] = useState<DefaultFilterState>({
-    contractType: [],
-    employmentBasis: [],
-  });
-
+  const [selected, setSelected] = useState<FilterState>(DefaultFilterState);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const dispatch = useAppDispatch();
+  // const { employmentBasis, contractType } = useAppSelector(
+  //   (state) => state.query.filters
+  // );
   const handleCheckboxChange = (
-    filterKey: keyof DefaultFilterState,
+    filterKey: keyof FilterState,
     filterValue: string
   ) => {
     console.log("filter checked for", filterValue);
-    setFilters((prev) => {
+    setSelected((prev) => {
       console.log("prev filters state", prev);
       // console.log('prev values of key', prev[])
       const currentFilters = [...prev[filterKey]];
@@ -50,30 +53,41 @@ const Filter = ({ variants }: FilterProps) => {
   };
 
   const applyFilters = () => {
-    console.log("setting params in URL");
-    const newSearchParams = new URLSearchParams();
-    console.log("filters to set", filters);
-    filters.contractType.forEach((option) =>
+    dispatch(setFilters(selected));
+    //Update URL in UI:
+    //Preserve existing search input values (if any)
+    const newSearchParams = new URLSearchParams(
+      searchParams.get("search") || ""
+    );
+    console.log("filters to set", selected);
+    //Add filter query params
+    selected.contractType.forEach((option) =>
       newSearchParams.append("contractType", option)
     );
-    filters.employmentBasis.forEach((option) =>
+    selected.employmentBasis.forEach((option) =>
       newSearchParams.append("employmentBasis", option)
     );
+    //Set new URL
     setSearchParams(newSearchParams);
     console.log(newSearchParams);
   };
 
   const clearFilters = () => {
-    setSearchParams("");
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      const filterKeys = ["contractType", "employmentBasis"];
+      filterKeys.forEach((key) => newParams.delete(key));
+      return newParams;
+    });
   };
 
   useEffect(() => {
     const contractType = searchParams.getAll("contractType");
     const employmentBasis = searchParams.getAll("employmentBasis");
-    setFilters({ contractType, employmentBasis });
+    setSelected({ contractType, employmentBasis });
   }, [searchParams]);
 
-  console.log("updated filters", filters);
+  console.log("updated filters", selected);
 
   return (
     <div className={variants}>
@@ -91,7 +105,7 @@ const Filter = ({ variants }: FilterProps) => {
               label={option}
               id={option}
               type={"checkbox"}
-              checked={filters.contractType.includes(option)}
+              checked={selected.contractType.includes(option)}
               onChange={() => handleCheckboxChange("contractType", option)}
             />
           ))}
@@ -111,7 +125,7 @@ const Filter = ({ variants }: FilterProps) => {
               label={option}
               id={option}
               type={"checkbox"}
-              checked={filters.employmentBasis.includes(option)}
+              checked={selected.employmentBasis.includes(option)}
               onChange={() => handleCheckboxChange("employmentBasis", option)}
             />
           ))}
