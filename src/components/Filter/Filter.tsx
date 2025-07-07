@@ -10,9 +10,6 @@ import { setFilters } from "../../redux/querySlice";
 
 interface FilterProps {
   variants: string;
-  // onCheckBoxChange: (filter: string) => void;
-  // filters: DefaultFilterState;
-  // setFilters: React.Dispatch<React.SetStateAction<DefaultFilterState>>;
 }
 
 export interface FilterState {
@@ -23,30 +20,27 @@ export interface FilterState {
 const Filter = ({ variants }: FilterProps) => {
   const [selected, setSelected] = useState<FilterState>(DefaultFilterState);
   const [searchParams, setSearchParams] = useSearchParams();
-
   const dispatch = useAppDispatch();
-  // const { employmentBasis, contractType } = useAppSelector(
-  //   (state) => state.query.filters
-  // );
+
   const handleCheckboxChange = (
     filterKey: keyof FilterState,
     filterValue: string
   ) => {
     console.log("filter checked for", filterValue);
     setSelected((prev) => {
-      console.log("prev filters state", prev);
+      // console.log("prev filters state", prev);
       // console.log('prev values of key', prev[])
       const currentFilters = [...prev[filterKey]];
-      console.log("before adding to filters state,", filterKey, [
-        ...prev[filterKey],
-      ]);
-      console.log("already included?", currentFilters.includes(filterValue));
+      // console.log("before adding to filters state,", filterKey, [
+      //   ...prev[filterKey],
+      // ]);
+      // console.log("already included?", currentFilters.includes(filterValue));
       if (currentFilters.includes(filterValue)) {
         const index = currentFilters.indexOf(filterValue);
         currentFilters.splice(index, 1);
       } else {
         currentFilters.push(filterValue);
-        console.log(prev[filterKey]);
+        // console.log(prev[filterKey]);
       }
       return { ...prev, [filterKey]: currentFilters };
     });
@@ -59,7 +53,6 @@ const Filter = ({ variants }: FilterProps) => {
     const newSearchParams = new URLSearchParams(
       searchParams.get("search") || ""
     );
-    console.log("filters to set", selected);
     //Add filter query params
     selected.contractType.forEach((option) =>
       newSearchParams.append("contractType", option)
@@ -69,7 +62,6 @@ const Filter = ({ variants }: FilterProps) => {
     );
     //Set new URL
     setSearchParams(newSearchParams);
-    console.log(newSearchParams);
   };
 
   const clearFilters = () => {

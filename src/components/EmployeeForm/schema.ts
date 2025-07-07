@@ -28,8 +28,6 @@ export const schema = z
     employmentBasis: z.enum(["FULL_TIME", "PART_TIME", "CASUAL"], {
       errorMap: () => ({ message: "Invalid Employment Basis" }),
     }),
-    // .transform((option) => option.replace(" ", "_")),
-    // .pipe(z.enum(["FULL_TIME", "PART_TIME", "CASUAL"])),
     hoursPerWeek: z.string(),
   })
   .refine(

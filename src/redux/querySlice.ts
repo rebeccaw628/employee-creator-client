@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  getAllEmployees,
   getEmployeesByQuery,
   type Employee,
 } from "../services/employees-services";
@@ -10,7 +11,6 @@ export interface QueryState {
   search: string;
   filters: FilterState;
   results: Employee[];
-  // selectedEmployee: Employee | null;
   status: "LOADING" | "SUCCESS" | "FAILED" | "IDLE";
   error: string | null;
 }
@@ -18,10 +18,22 @@ const initialState: QueryState = {
   search: "",
   filters: DefaultFilterState,
   results: [],
-  // selectedEmployee: null,
   status: "IDLE",
   error: null,
 };
+
+export const fetchAllEmployees = createAsyncThunk<
+  Employee[],
+  void,
+  { rejectValue: string }
+>("employees/fetchAll", async (_, { rejectWithValue }) => {
+  try {
+    return await getAllEmployees();
+  } catch (error) {
+    console.warn(error);
+    return rejectWithValue("Failed to fetch employees");
+  }
+});
 
 export const queryEmployees = createAsyncThunk<
   Employee[],
@@ -37,7 +49,7 @@ export const queryEmployees = createAsyncThunk<
       if (error instanceof Error) {
         return rejectWithValue(error.message);
       }
-      return rejectWithValue("An unknown error occurred");
+      return rejectWithValue("Failed to fetch employees");
     }
   }
 );
@@ -50,8 +62,7 @@ const querySlice = createSlice({
       state.search = action.payload;
     },
     setFilters: (state, action) => {
-      state.filters = action.payload;
-      // state.filters = { ...state.filters, ...action.payload };
+      state.filters = { ...state.filters, ...action.payload };
     },
     clearSearch: (state) => {
       state.search = "";
@@ -67,6 +78,17 @@ const querySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchAllEmployees.pending, (state) => {
+        state.status = "LOADING";
+      })
+      .addCase(fetchAllEmployees.fulfilled, (state, action) => {
+        state.status = "SUCCESS";
+        state.results = action.payload;
+      })
+      .addCase(fetchAllEmployees.rejected, (state, action) => {
+        state.status = "FAILED";
+        state.error = action.payload as string;
+      })
       .addCase(queryEmployees.pending, (state) => {
         state.status = "LOADING";
       })

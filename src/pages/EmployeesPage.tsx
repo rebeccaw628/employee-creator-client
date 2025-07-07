@@ -1,9 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  deleteEmployeeById,
-  getAllEmployees,
-  type Employee,
-} from "../services/employees-services";
+import { useEffect, useRef, useState } from "react";
+import { deleteEmployeeById } from "../services/employees-services";
 import EmployeeCard from "../components/EmployeeCard/EmployeeCard";
 import IconAndTextLabel from "../components/IconAndTextLabel/IconAndTextLabel";
 import {
@@ -20,21 +16,23 @@ import Modal from "../components/Modal/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Filter from "../components/Filter/Filter";
 import { Link, useSearchParams } from "react-router";
-import { useSelector } from "react-redux";
-import { useAppDispatch, useAppSelector, type RootState } from "../redux/store";
-import { queryEmployees, setFilters, setSearch } from "../redux/querySlice";
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import {
+  fetchAllEmployees,
+  queryEmployees,
+  setFilters,
+  setSearch,
+} from "../redux/querySlice";
 import SearchBar from "../components/SearchBar/SearchBar";
 
 const EmployeesPage = () => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [employeeID, setEmployeeID] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useAppDispatch();
-  const { search, filters, results, status } = useAppSelector(
+  const { search, filters, results, status, error } = useAppSelector(
     (state) => state.query
   );
 
@@ -45,50 +43,35 @@ const EmployeesPage = () => {
   }, []);
 
   useEffect(() => {
-    const params = searchParams.toString().replaceAll("+", "_");
-    console.log("params to send:", params);
     setIsFilterOpen(false);
     if (search || filters.contractType || filters.employmentBasis) {
+      const params = searchParams.toString().replaceAll("+", "_");
       dispatch(queryEmployees({ searchTerm: search, queryParams: params }));
     } else {
-      fetchAllEmployees();
+      dispatch(fetchAllEmployees());
     }
-    // fetchAllEmployees(params);
-  }, [
-    searchParams,
-    // search,
-    dispatch,
-  ]);
-
-  const fetchAllEmployees = () => {
-    setLoading(true);
-    getAllEmployees()
-      .then((data) => {
-        setEmployees(data);
-      })
-      .catch((e) => console.warn(e))
-      .finally(() => setLoading(false));
-  };
+  }, [searchParams, dispatch]);
 
   const handleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
   };
 
-  // const handleDelete = async (id: number) => {
-  //   console.log("deleting employee with id:", id);
-  //   closeConfirmationModal();
-  //   await deleteEmployeeById(id);
-  //   fetchAllEmployees();
-  // };
+  const handleDelete = async (id: number) => {
+    closeConfirmationModal();
+    await deleteEmployeeById(id);
+    dispatch(fetchAllEmployees());
+  };
 
   const openConfirmationModal = (id: number) => {
-    console.log("modal triggered");
     setEmployeeID(id);
   };
 
   const closeConfirmationModal = () => {
     setEmployeeID(null);
   };
+
+  if (status === "LOADING") return <div>Loading...</div>;
+  if (status === "FAILED") return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="w-4/5 h-auto">
@@ -181,7 +164,7 @@ const EmployeesPage = () => {
                 variants={
                   "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl"
                 }
-                // onClick={() => handleDelete(employeeID)}
+                onClick={() => handleDelete(employeeID)}
               >
                 OK
               </Button>

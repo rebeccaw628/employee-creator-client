@@ -45,7 +45,6 @@ const InputText = ({
         disabled={isDisabled}
         {...(register ? register(name) : {})}
         onChange={onChange}
-        // {...(onChange != undefined ? { onChange } : {})}
         checked={type === "checkbox" ? checked : undefined}
       />
       {errors?.[name]?.message && (

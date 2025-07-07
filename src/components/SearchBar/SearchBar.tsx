@@ -1,8 +1,8 @@
-import { useRef, useState, type Ref } from "react";
+import { useRef, type Ref } from "react";
 import Button from "../Button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { useAppDispatch } from "../../redux/store";
 import { useSearchParams } from "react-router";
 import { setSearch } from "../../redux/querySlice";
 
@@ -18,14 +18,10 @@ const SearchBar = ({ ref }: SearchBarProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const searchValue = searchInputRef.current?.value;
-    console.log("searching:", searchValue);
+    // console.log("searching:", searchValue);
     dispatch(setSearch(searchValue));
-    // const existingFilters = `${searchParams.getAll(
-    //   "contractType"
-    // )}${searchParams.getAll("employmentBasis")}`;
-    // console.log("existingFilters to construct", existingFilters);
     const newSearchParams = new URLSearchParams(searchParams);
-    console.log(newSearchParams);
+    // console.log(newSearchParams);
     if (searchValue) {
       newSearchParams.set("search", searchValue);
     } else {

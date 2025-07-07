@@ -6,9 +6,6 @@ import {
   getContractClass,
   getEmploymentClass,
 } from "../../services/utils";
-import Button from "../Button/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface EmployeeCardProps extends React.PropsWithChildren {
   employee: Employee;
@@ -52,16 +49,6 @@ const EmployeeCard = ({ employee, children }: EmployeeCardProps) => {
         </p>
       </div>
       {children}
-      {/* <Button
-        variants={
-          "h-10 w-fit self-center justify-self-center cursor-pointer hover:border-[#646cff] py-2 px-3 "
-        }
-      >
-        <FontAwesomeIcon
-          icon={faTrash}
-          className="text-gray-700 text-xl hover:text-red-700 hover:shadow-lg"
-        />
-      </Button> */}
     </div>
   );
 };

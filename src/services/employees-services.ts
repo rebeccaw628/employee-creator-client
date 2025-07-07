@@ -1,5 +1,4 @@
 import type { EmployeeFormData } from "../components/EmployeeForm/schema";
-import { displayDate } from "./utils";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -49,7 +48,6 @@ export interface UpdateEmployee {
 }
 
 export interface APIEmployee {
-  // id: number;
   first_name: string;
   last_name: string;
   middle_name?: string;
@@ -83,14 +81,8 @@ export interface EmployeeStats {
   endingThisMonth: NameAndId[];
 }
 
-export const getAllEmployees = async (
-  queryParams?: string
-): Promise<Employee[]> => {
-  const response = await fetch(
-    queryParams
-      ? `${baseURL}/employees/?${queryParams}`
-      : `${baseURL}/employees/`
-  );
+export const getAllEmployees = async (): Promise<Employee[]> => {
+  const response = await fetch(`${baseURL}/employees/`);
   if (!response.ok) {
     throw new Error("Failed to retrive employee list");
   }
@@ -115,7 +107,6 @@ export const getEmployeeStats = async (): Promise<EmployeeStats> => {
   const data = await response.json();
   return data;
 };
-//?search=john&employmentBasis=CASUAL
 
 export const getEmployeesByQuery = async (
   searchTerm?: string,

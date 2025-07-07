@@ -50,8 +50,6 @@ const EmployeeForm = ({
     }
   }, [employmentBasis]);
 
-  const testClick = () => console.log("clicked", "errors", errors);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
       <div className="flex gap-20">
@@ -214,7 +212,6 @@ const EmployeeForm = ({
             "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-3xl right-[0]"
           }
           type="submit"
-          // onClick={testClick}
         >
           {formType === "edit" ? "Save Changes" : "Add new employee"}
         </Button>

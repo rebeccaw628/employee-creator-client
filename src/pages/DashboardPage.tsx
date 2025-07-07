@@ -8,32 +8,23 @@ import Modal from "../components/Modal/Modal";
 import Button from "../components/Button/Button";
 
 const DashboardPage = () => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [stats, setStats] = useState<EmployeeStats>({
     employmentBasis: [],
     contractType: [],
     endingThisMonth: [],
   });
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showEmployees, setShowEmployeees] = useState<boolean>(false);
 
   useEffect(() => {
-    // setLoading(true);
+    setLoading(true);
     getEmployeeStats()
       .then((data) => {
         setStats(data);
       })
-      .catch((e) => console.warn(e));
-    // .finally(() => setLoading(false));
-  });
-
-  const handleMouseEnter = () => {
-    setShowEmployeees(true);
-  };
-
-  const handleMouseLeave = () => {
-    setShowEmployeees(false);
-  };
+      .catch((e) => console.warn(e))
+      .finally(() => setLoading(false));
+  }, []);
 
   const { employmentBasis, contractType, endingThisMonth } = stats;
 
@@ -68,12 +59,7 @@ const DashboardPage = () => {
           content={stat.type.replace("_", " ")}
         />
       ))}
-      <p
-        // onMouseEnter={handleMouseEnter}
-        // onMouseLeave={handleMouseLeave}
-        onClick={openInfoModal}
-        className="cursor-pointer "
-      >
+      <p onClick={openInfoModal} className="cursor-pointer ">
         Employees finishing this month:
       </p>
       <StatsCard bold={endingThisMonth.length} content="Employees" />
@@ -99,14 +85,6 @@ const DashboardPage = () => {
           ))}
         </Modal>
       )}
-      {/* {showEmployees &&
-        endingThisMonth.map((employee) => (
-          <StatsCard
-            variants={"text-gray-600"}
-            bold={employee.name}
-            content={`ID: ${employee.id}`}
-          />
-        ))} */}
     </div>
   );
 };

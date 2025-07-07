@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import {
   getEmployeeById,
   updateEmployeeById,
@@ -40,12 +40,6 @@ const EmployeePage = () => {
 
   const { id } = useParams();
   const numberID = Number(id);
-
-  // const dispatch = useAppDispatch();
-  // const employeeProfile = useAppSelector(
-  //   (state) => state.employee.selectedEmployee
-  // );
-
   const handleUpdateModal = () => {
     setShowModal(!showModal);
   };
@@ -83,6 +77,7 @@ const EmployeePage = () => {
 
   if (loading) return <div>Loading employee details...</div>;
   if (error) return <div>Error alert: {error}</div>;
+  if (saving) return <div>Saving employee details</div>;
 
   return (
     <div className="w-4/5 flex flex-col gap-6 relative">
@@ -159,7 +154,6 @@ const EmployeePage = () => {
           children={
             <EmployeeForm
               onSubmit={(data) => handleSave(numberID, data)}
-              // onDiscard={handleDiscard}
               formType={"edit"}
               existingValues={{ ...employee }}
             />

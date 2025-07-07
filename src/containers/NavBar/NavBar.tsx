@@ -1,5 +1,4 @@
 import { faTableColumns, faUsers } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink } from "react-router";
 import IconAndTextLabel from "../../components/IconAndTextLabel/IconAndTextLabel";
 
