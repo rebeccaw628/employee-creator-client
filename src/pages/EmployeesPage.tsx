@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { deleteEmployeeById } from "../services/employees-services";
 import EmployeeCard from "../components/EmployeeCard/EmployeeCard";
 import IconAndTextLabel from "../components/IconAndTextLabel/IconAndTextLabel";
@@ -29,26 +29,41 @@ const EmployeesPage = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [employeeID, setEmployeeID] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
-  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useAppDispatch();
-  const { search, filters, results, status, error } = useAppSelector(
+  const { search, results, status, error } = useAppSelector(
     (state) => state.query
   );
 
   useEffect(() => {
+    console.log("on mount");
     const searchTerm = searchParams.get("search") || "";
+    const contractTypeFilters = searchParams.getAll("contractType");
+    const employmentBasisFilters = searchParams
+      .getAll("employmentBasis")
+      .map((param) => param.replaceAll("+", "_"));
+
     dispatch(setSearch(searchTerm));
-    dispatch(setFilters(searchParams.toString().replaceAll("+", "_")));
+    dispatch(
+      setFilters({
+        contractType: contractTypeFilters,
+        employmentBasis: employmentBasisFilters,
+      })
+    );
   }, []);
+
+  console.log("navD to employees page");
 
   useEffect(() => {
     setIsFilterOpen(false);
-    if (search || filters.contractType || filters.employmentBasis) {
-      const params = searchParams.toString().replaceAll("+", "_");
+
+    const params = searchParams.toString().replaceAll("+", "_");
+    if (params != "") {
       dispatch(queryEmployees({ searchTerm: search, queryParams: params }));
+      console.log("second if running");
     } else {
       dispatch(fetchAllEmployees());
+      console.log("second else running");
     }
   }, [searchParams, dispatch]);
 
@@ -74,11 +89,11 @@ const EmployeesPage = () => {
   if (status === "FAILED") return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="w-4/5 h-auto">
+    <div className="w-4/5 px-4 h-auto">
       <div className="flex justify-between">
         <h1 className="justify-self-start text-2xl mb-4">All Employees</h1>
         <div className="flex justify-center items-center gap-6">
-          <SearchBar ref={searchInputRef} />
+          <SearchBar />
           <div className="flex flex-col relative">
             <Button
               variants={
@@ -122,26 +137,30 @@ const EmployeesPage = () => {
           variant={"col-span-2"}
         />
       </div>
-      {results.map((employee) => (
-        <div key={employee.id} className="flex">
-          <EmployeeCard employee={employee}>
-            {" "}
-            <Button
-              variants={
-                "h-10 w-fit self-center justify-self-center cursor-pointer hover:border-[#646cff] py-2 px-3 "
-              }
-              onClick={() => {
-                openConfirmationModal(employee.id);
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faTrash}
-                className="text-gray-700 text-xl hover:text-red-700 hover:shadow-lg"
-              />
-            </Button>
-          </EmployeeCard>
-        </div>
-      ))}
+      {results.length > 0 ? (
+        results.map((employee) => (
+          <div key={employee.id} className="flex">
+            <EmployeeCard employee={employee}>
+              {" "}
+              <Button
+                variants={
+                  "h-10 w-fit self-center justify-self-center cursor-pointer hover:border-[#646cff] py-2 px-3 "
+                }
+                onClick={() => {
+                  openConfirmationModal(employee.id);
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  className="text-gray-700 text-xl hover:text-red-700 hover:shadow-lg"
+                />
+              </Button>
+            </EmployeeCard>
+          </div>
+        ))
+      ) : (
+        <h2>No results found for '{search}'</h2>
+      )}
       {employeeID && (
         <Modal
           heading={"Confirm Delete"}

@@ -3,10 +3,9 @@ import { contractOptions, employmentOptions } from "../../types/option-types";
 import Button from "../Button/Button";
 import InputText from "../EmployeeForm/InputText/InputText";
 import { useSearchParams } from "react-router";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { useAppDispatch } from "../../redux/store";
 import { DefaultFilterState } from "./defaultFilterState";
 import { setFilters } from "../../redux/querySlice";
-// import type { DefaultFilterState } from "../../pages/EmployeesPage";
 
 interface FilterProps {
   variants: string;
@@ -28,19 +27,12 @@ const Filter = ({ variants }: FilterProps) => {
   ) => {
     console.log("filter checked for", filterValue);
     setSelected((prev) => {
-      // console.log("prev filters state", prev);
-      // console.log('prev values of key', prev[])
       const currentFilters = [...prev[filterKey]];
-      // console.log("before adding to filters state,", filterKey, [
-      //   ...prev[filterKey],
-      // ]);
-      // console.log("already included?", currentFilters.includes(filterValue));
       if (currentFilters.includes(filterValue)) {
         const index = currentFilters.indexOf(filterValue);
         currentFilters.splice(index, 1);
       } else {
         currentFilters.push(filterValue);
-        // console.log(prev[filterKey]);
       }
       return { ...prev, [filterKey]: currentFilters };
     });

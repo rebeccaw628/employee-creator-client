@@ -81,7 +81,7 @@ const EmployeePage = () => {
 
   return (
     <div className="w-4/5 flex flex-col gap-6 relative">
-      <h1> Employee Profile</h1>
+      <h1 className="text-xl"> Employee Profile</h1>
       <div className="flex gap-20">
         <div className="flex flex-col gap-4">
           <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200">

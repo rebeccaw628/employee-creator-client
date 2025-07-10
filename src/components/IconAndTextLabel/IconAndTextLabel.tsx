@@ -16,7 +16,7 @@ const IconAndTextLabel = ({
 }: IconAndTextLabelProps) => {
   const labelClass = spacing === "compact" ? "gap-4" : "gap-8";
   return (
-    <div className={`flex ${labelClass} ${variant}`}>
+    <div className={`flex items-center ${labelClass} ${variant}`}>
       <FontAwesomeIcon icon={icon} />
       <p>{text}</p>
     </div>

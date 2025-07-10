@@ -1,8 +1,11 @@
 import { faTableColumns, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router";
 import IconAndTextLabel from "../../components/IconAndTextLabel/IconAndTextLabel";
+import { useAppDispatch } from "../../redux/store";
+import { setSearch } from "../../redux/querySlice";
 
 const NavBar = () => {
+  const dispatch = useAppDispatch();
   const navItems = [
     {
       id: "dashboard",
@@ -29,6 +32,7 @@ const NavBar = () => {
               ? "bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-semibold shadow-lg"
               : "text-gray-500 hover:bg-gray-50 hover:text-gray-700")
           }
+          onClick={() => dispatch(setSearch(""))}
         >
           <IconAndTextLabel
             icon={navItem.icon}

@@ -6,9 +6,16 @@ interface ModalProps {
   onClose: () => unknown;
   variants: string;
   children: React.ReactNode;
+  innerVariants?: string;
 }
 
-const Modal = ({ heading, onClose, variants, children }: ModalProps) => {
+const Modal = ({
+  heading,
+  onClose,
+  variants,
+  innerVariants,
+  children,
+}: ModalProps) => {
   const onContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
@@ -30,7 +37,7 @@ const Modal = ({ heading, onClose, variants, children }: ModalProps) => {
     >
       <div
         onClick={onContentClick}
-        className="h-auto p-4 rounded bg-white border"
+        className={`h-auto p-4 rounded bg-white border ${innerVariants}`}
       >
         <div className="flex justify-between mb-10">
           <h2 className="text-xl">{heading}</h2>

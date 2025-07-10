@@ -39,46 +39,55 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="text-red">
-      <h1>Dashboard</h1>
-      <p>Employment Basis Summary:</p>
-      <div className="">
-        {employmentBasis.map((stat) => (
-          <StatsCard
-            key={stat.type}
-            bold={stat.count}
-            content={stat.type.replace("_", " ")}
-          />
-        ))}
+    <div className="w-4/5 px-4 flex flex-col gap-4">
+      <h1 className="justify-self-start text-2xl">Dashboard</h1>
+      <div className="flex flex-col gap-4">
+        <p className="text-left text-xl">Employment Basis Summary:</p>
+        <div className="flex gap-6">
+          {employmentBasis.map((stat) => (
+            <StatsCard
+              key={stat.type}
+              bold={stat.count}
+              content={stat.type.replace("_", " ")}
+            />
+          ))}
+        </div>
       </div>
-      <p>Contract Type Summary:</p>
-      {contractType.map((stat) => (
-        <StatsCard
-          key={stat.type}
-          bold={stat.count}
-          content={stat.type.replace("_", " ")}
-        />
-      ))}
-      <p onClick={openInfoModal} className="cursor-pointer ">
-        Employees finishing this month:
-      </p>
-      <StatsCard bold={endingThisMonth.length} content="Employees" />
-      <Button
-        variants={
-          "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-lg"
-        }
-        onClick={openInfoModal}
-      >
-        SEE DETAILS
-      </Button>
+
+      <div className="flex flex-col gap-4">
+        <p className="text-left text-xl">Contract Type Summary:</p>
+        <div className="flex gap-6">
+          {contractType.map((stat) => (
+            <StatsCard
+              key={stat.type}
+              bold={stat.count}
+              content={stat.type.replace("_", " ")}
+            />
+          ))}
+        </div>
+      </div>
+
+      <p className="text-left text-xl">Employees finishing this month:</p>
+      <StatsCard bold={endingThisMonth.length} content="Employees">
+        <Button
+          variants={
+            "h-10 w-fit cursor-pointer hover:shadow-lg hover:bg-brand-purple-500 hover:text-white py-2 px-3 border rounded-lg"
+          }
+          onClick={openInfoModal}
+        >
+          SEE DETAILS
+        </Button>
+      </StatsCard>
+
       {showModal && (
         <Modal
           heading={"Employee Details"}
           onClose={closeInfoModal}
           variants={"bg-black/90 py-8"}
+          innerVariants="w-[25%]"
         >
           {endingThisMonth.map((employee) => (
-            <div className="flex justify-between w-2/12">
+            <div key={employee.id} className="flex justify-between">
               <p>{employee.name}</p>
               <p className="text-gray-600">{`ID: ${employee.id}`}</p>
             </div>

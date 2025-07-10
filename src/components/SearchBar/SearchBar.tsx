@@ -6,11 +6,7 @@ import { useAppDispatch } from "../../redux/store";
 import { useSearchParams } from "react-router";
 import { setSearch } from "../../redux/querySlice";
 
-interface SearchBarProps {
-  ref: Ref<HTMLInputElement>;
-}
-
-const SearchBar = ({ ref }: SearchBarProps) => {
+const SearchBar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,10 +14,8 @@ const SearchBar = ({ ref }: SearchBarProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const searchValue = searchInputRef.current?.value;
-    // console.log("searching:", searchValue);
     dispatch(setSearch(searchValue));
     const newSearchParams = new URLSearchParams(searchParams);
-    // console.log(newSearchParams);
     if (searchValue) {
       newSearchParams.set("search", searchValue);
     } else {
@@ -33,7 +27,7 @@ const SearchBar = ({ ref }: SearchBarProps) => {
   return (
     <form className="flex gap-2" onSubmit={handleSubmit}>
       <input
-        ref={ref}
+        ref={searchInputRef}
         name="search"
         type="search"
         placeholder="Search..."
